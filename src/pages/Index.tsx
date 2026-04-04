@@ -45,7 +45,6 @@ const toAbsoluteUrl = (url: string) =>
 
 const Index = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<SectionId>("home");
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
@@ -91,8 +90,8 @@ const Index = () => {
             publishedAt: item?.snippet?.publishedAt,
           };
         })
-        .filter((video): video is PortfolioItem => Boolean(video))
-        .sort((a, b) => {
+        .filter((video: PortfolioItem | null): video is PortfolioItem => Boolean(video))
+        .sort((a: PortfolioItem, b: PortfolioItem) => {
           if (!a.publishedAt && !b.publishedAt) return 0;
           if (!a.publishedAt) return 1;
           if (!b.publishedAt) return -1;
@@ -112,7 +111,6 @@ const Index = () => {
       setVideosLoadState("error");
     }
   };
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   // Smooth scroll + active section highlight
   useEffect(() => {
     const sectionIds: SectionId[] = ["home", "work", "socials", "contact"];
@@ -135,7 +133,7 @@ const Index = () => {
           current = id;
         }
       }
-      setActiveSection(current);
+      void current;
     };
 
     handleScroll();

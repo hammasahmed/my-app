@@ -22,9 +22,8 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  },
-  "paths": {
+    "noUncheckedSideEffectImports": true,
+    "paths": {
       "@/*": ["./src/*"]
     }
   },

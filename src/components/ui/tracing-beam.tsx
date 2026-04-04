@@ -19,12 +19,11 @@ export const TracingBeam = ({
   const { scrollYProgress } = useScroll();
 
   const contentRef = useRef<HTMLDivElement>(null);
-  const [svgHeight, setSvgHeight] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
 
   useEffect(() => {
     const update = () => {
-      if (contentRef.current) setSvgHeight(contentRef.current.offsetHeight);
+      if (contentRef.current) setViewportHeight(contentRef.current.offsetHeight);
       setViewportHeight(window.innerHeight);
     };
     update();
