@@ -140,7 +140,6 @@ export default function Dashboard1() {
   };
 
   const datafetch = async () => {
-    setVideosLoadState("loading");
     try {
       const res = await axios.get("http://localhost:4000/api/data");
       const mappedVideos: PortfolioItem[] = (res.data?.items ?? [])
