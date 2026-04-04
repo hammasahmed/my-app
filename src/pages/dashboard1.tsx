@@ -1,14 +1,5 @@
 import { Link } from "react-router-dom";
-import {
-  Download,
-  Home,
-  Moon,
-  RefreshCw,
-  Sparkles,
-  Sun,
-  Video,
-  Wrench,
-} from "lucide-react";
+import { Home, Moon, Sun } from "lucide-react";
 import { AppSidebar } from "../components/app-sidebar";
 import {
   Breadcrumb,
@@ -26,7 +17,7 @@ import {
   SidebarTrigger,
 } from "../components/ui/sidebar";
 import axios from "axios";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { Textarea } from "../components/ui/textarea";
 
@@ -46,11 +37,6 @@ type TestimonialItem = {
   src: string;
 };
 
-type SectionId = (typeof navLinks)[number] extends infer T
-  ? T extends string
-    ? Lowercase<T>
-    : never
-  : never;
 type PortfolioItem = {
   title: string;
   description: string;
@@ -60,18 +46,8 @@ type PortfolioItem = {
 };
 
 export default function Dashboard1() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<SectionId>("home");
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
-  const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
-  const [videosLoadState, setVideosLoadState] = useState<
-    "loading" | "ready" | "error"
-  >("loading");
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const [dark, setDark] = useState(true);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [testimonialForm, setTestimonialForm] = useState({ name: "", designation: "", quote: "", src: "" });
   const [testimonialSubmitting, setTestimonialSubmitting] = useState(false);
@@ -185,8 +161,8 @@ export default function Dashboard1() {
             publishedAt: item?.snippet?.publishedAt,
           };
         })
-        .filter((video): video is PortfolioItem => Boolean(video))
-        .sort((a, b) => {
+        .filter((video: PortfolioItem | null): video is PortfolioItem => Boolean(video))
+        .sort((a: PortfolioItem, b: PortfolioItem) => {
           if (!a.publishedAt && !b.publishedAt) return 0;
           if (!a.publishedAt) return 1;
           if (!b.publishedAt) return -1;
@@ -197,13 +173,9 @@ export default function Dashboard1() {
         });
 
       setPortfolioItems(mappedVideos);
-      setCurrentVideo(mappedVideos[0] ?? null);
-      setVideosLoadState("ready");
     } catch (err) {
       console.error("Error fetching data:", err);
       setPortfolioItems([]);
-      setCurrentVideo(null);
-      setVideosLoadState("error");
     }
   };
 
