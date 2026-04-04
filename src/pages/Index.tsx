@@ -44,7 +44,7 @@ const toAbsoluteUrl = (url: string) =>
   url && !/^https?:\/\//i.test(url) ? `https://${url}` : url;
 
 const Index = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [, setMenuOpen] = useState(false);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
