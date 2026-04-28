@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "axios";
+import BASE_URL from "../lib/api";
 import Navbar from "../components/ui/navbar";
 import HeroTexts from "../components/ui/hero-texts";
 import { CircularTestimonials } from "../components/ui/circular-testimonials";
@@ -71,7 +72,7 @@ const Index = () => {
   const datafetch = async () => {
     setVideosLoadState("loading");
     try {
-      const res = await axios.get("http://localhost:4000/api/data");
+      const res = await axios.get(`${BASE_URL}/api/data`);
       const mappedVideos: PortfolioItem[] = (res.data?.items ?? [])
         .map((item: any) => {
           const youtubeId =
@@ -115,9 +116,9 @@ const Index = () => {
   useEffect(() => {
     const sectionIds: SectionId[] = ["home", "work", "socials", "contact"];
     datafetch();
-    axios.get("http://localhost:4000/api/testimonials").then(res => setTestimonials(res.data)).catch(() => {});
-    axios.get("http://localhost:4000/api/hidden-videos").then(res => setHiddenVideos(new Set(res.data))).catch(() => {});
-    axios.get("http://localhost:4000/api/social-links").then(res => setSocialLinks({ instagram: res.data.instagram ?? "", facebook: res.data.facebook ?? "" })).catch(() => {});
+    axios.get(`${BASE_URL}/api/testimonials`).then(res => setTestimonials(res.data)).catch(() => {});
+    axios.get(`${BASE_URL}/api/hidden-videos`).then(res => setHiddenVideos(new Set(res.data))).catch(() => {});
+    axios.get(`${BASE_URL}/api/social-links`).then(res => setSocialLinks({ instagram: res.data.instagram ?? "", facebook: res.data.facebook ?? "" })).catch(() => {});
     // Update portfolio items with fetched data
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -153,7 +154,7 @@ const Index = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setSubmitStatus("idle");
-      await axios.post("http://localhost:4000/api/contact", values);
+      await axios.post(`${BASE_URL}/api/contact`, values);
       setSubmitStatus("success");
       form.reset();
     } catch {

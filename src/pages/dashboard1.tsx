@@ -17,6 +17,7 @@ import {
   SidebarTrigger,
 } from "../components/ui/sidebar";
 import axios from "axios";
+import BASE_URL from "../lib/api";
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { Textarea } from "../components/ui/textarea";
@@ -59,14 +60,14 @@ export default function Dashboard1() {
 
   const fetchHiddenVideos = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/hidden-videos");
+      const res = await axios.get(`${BASE_URL}/api/hidden-videos`);
       setHiddenVideos(new Set(res.data));
     } catch {}
   };
 
   const fetchSocialLinks = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/social-links");
+      const res = await axios.get(`${BASE_URL}/api/social-links`);
       setSocialLinks({ instagram: res.data.instagram ?? "", facebook: res.data.facebook ?? "" });
     } catch {}
   };
@@ -75,17 +76,17 @@ export default function Dashboard1() {
     e.preventDefault();
     setSocialSaving(true);
     try {
-      await axios.put("http://localhost:4000/api/social-links", socialLinks);
+      await axios.put(`${BASE_URL}/api/social-links`, socialLinks);
     } catch {}
     setSocialSaving(false);
   };
 
   const toggleHide = async (youtubeId: string) => {
     if (hiddenVideos.has(youtubeId)) {
-      await axios.delete(`http://localhost:4000/api/hidden-videos/${youtubeId}`).catch(() => {});
+      await axios.delete(`${BASE_URL}/api/hidden-videos/${youtubeId}`).catch(() => {});
       setHiddenVideos((prev) => { const next = new Set(prev); next.delete(youtubeId); return next; });
     } else {
-      await axios.post("http://localhost:4000/api/hidden-videos", { youtubeId }).catch(() => {});
+      await axios.post(`${BASE_URL}/api/hidden-videos`, { youtubeId }).catch(() => {});
       setHiddenVideos((prev) => new Set(prev).add(youtubeId));
     }
   };
@@ -94,14 +95,14 @@ export default function Dashboard1() {
 
   const fetchContactMessages = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/contact");
+      const res = await axios.get(`${BASE_URL}/api/contact`);
       setContactMessages(res.data);
     } catch {}
   };
 
   const handleDeleteMessage = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:4000/api/contact/${id}`);
+      await axios.delete(`${BASE_URL}/api/contact/${id}`);
       setContactMessages((prev) => prev.filter((m) => m._id !== id));
     } catch {}
   };
@@ -116,7 +117,7 @@ export default function Dashboard1() {
 
   const fetchTestimonials = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/testimonials");
+      const res = await axios.get(`${BASE_URL}/api/testimonials`);
       setTestimonials(res.data);
     } catch {}
   };
@@ -125,7 +126,7 @@ export default function Dashboard1() {
     e.preventDefault();
     setTestimonialSubmitting(true);
     try {
-      const res = await axios.post("http://localhost:4000/api/testimonials", testimonialForm);
+      const res = await axios.post(`${BASE_URL}/api/testimonials`, testimonialForm);
       setTestimonials((prev) => [res.data, ...prev]);
       setTestimonialForm({ name: "", designation: "", quote: "", src: "" });
     } catch {}
@@ -134,14 +135,14 @@ export default function Dashboard1() {
 
   const handleDeleteTestimonial = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:4000/api/testimonials/${id}`);
+      await axios.delete(`${BASE_URL}/api/testimonials/${id}`);
       setTestimonials((prev) => prev.filter((t) => t._id !== id));
     } catch {}
   };
 
   const datafetch = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/data");
+      const res = await axios.get(`${BASE_URL}/api/data`);
       const mappedVideos: PortfolioItem[] = (res.data?.items ?? [])
         .map((item: any) => {
           const youtubeId =
