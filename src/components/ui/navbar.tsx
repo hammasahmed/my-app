@@ -42,7 +42,7 @@ const Navbar = () => {
           <a href="/" className="flex items-center">
             <div className="mr-2 h-8 w-8 rounded-full bg-foreground transition-transform duration-500 hover:scale-110"></div>
             <span className={`font-semibold tracking-wider text-foreground transition-all duration-500 ${isScrolled ? 'text-base' : 'text-lg'}`}>
-              LOGO
+              LOGA
             </span>
           </a>
         </div>
