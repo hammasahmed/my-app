@@ -180,13 +180,13 @@ const Index = () => {
         <div className="w-full px-4 py-16 sm:px-6 lg:px-8 lg:pt-0 flex flex-col items-center">
           <div className=" flex flex-col gap-24 md:gap-32 ">
             {/* Hero */}
-            <AuroraBackground
+            {/* <AuroraBackground
               id="home"
               className="flex flex-col items-center gap-8 rounded-3xl"
               showRadialGradient={true}
             >
               <HeroTexts handleNavClick={handleNavClick} />
-            </AuroraBackground>
+            </AuroraBackground> */}
             <div className="flex justify-center">
               <div className="w-[60vw]   border rounded-4xl border-border/60 bg-card/60 shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
                 <div className="flex items-center justify-between border-b border-border/60 bg-background/80 px-4 py-2 text-xs text-muted-foreground">
