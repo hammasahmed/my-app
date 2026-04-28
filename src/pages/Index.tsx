@@ -6,18 +6,11 @@ import * as z from "zod";
 import axios from "axios";
 import BASE_URL from "../lib/api";
 import Navbar from "../components/ui/navbar";
-import HeroTexts from "../components/ui/hero-texts";
+// import HeroTexts from "../components/ui/hero-texts";
 import { CircularTestimonials } from "../components/ui/circular-testimonials";
 import monnimage from "../assets/moon.png";
-import { AuroraBackground } from "../components/ui/aurora-background";
+// import { AuroraBackground } from "../components/ui/aurora-background";
 import { TracingBeam } from "../components/ui/tracing-beam";
-
-const navLinks = ["Home", "Work", "Socials", "Contact"] as const;
-type SectionId = (typeof navLinks)[number] extends infer T
-  ? T extends string
-    ? Lowercase<T>
-    : never
-  : never;
 
 type PortfolioItem = {
   title: string;
@@ -41,11 +34,18 @@ type TestimonialItem = {
   src: string;
 };
 
+// const navLinks = ["Home", "Work", "Socials", "Contact"] as const;
+// type SectionId = (typeof navLinks)[number] extends infer T
+//   ? T extends string
+//     ? Lowercase<T>
+//     : never
+//   : never;
+
 const toAbsoluteUrl = (url: string) =>
   url && !/^https?:\/\//i.test(url) ? `https://${url}` : url;
 
 const Index = () => {
-  const [, setMenuOpen] = useState(false);
+  // const [_menuOpen, setMenuOpen] = useState(false);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
@@ -112,44 +112,25 @@ const Index = () => {
       setVideosLoadState("error");
     }
   };
-  // Smooth scroll + active section highlight
   useEffect(() => {
-    const sectionIds: SectionId[] = ["home", "work", "socials", "contact"];
     datafetch();
     axios.get(`${BASE_URL}/api/testimonials`).then(res => setTestimonials(res.data)).catch(() => {});
     axios.get(`${BASE_URL}/api/hidden-videos`).then(res => setHiddenVideos(new Set(res.data))).catch(() => {});
     axios.get(`${BASE_URL}/api/social-links`).then(res => setSocialLinks({ instagram: res.data.instagram ?? "", facebook: res.data.facebook ?? "" })).catch(() => {});
-    // Update portfolio items with fetched data
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setShowScrollTop(scrollY > 300);
-
-      let current: SectionId = "home";
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const rect = el.getBoundingClientRect();
-        const offsetTop = rect.top + window.scrollY;
-        if (scrollY >= offsetTop - 200) {
-          current = id;
-        }
-      }
-      void current;
-    };
-
+    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (id: SectionId) => (e: React.MouseEvent) => {
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    setMenuOpen(false);
-  };
+  // const _handleNavClick = (id: SectionId) => (e: React.MouseEvent) => {
+  //   e.preventDefault();
+  //   const el = document.getElementById(id);
+  //   if (el) {
+  //     el.scrollIntoView({ behavior: "smooth", block: "start" });
+  //   }
+  //   setMenuOpen(false);
+  // };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -174,7 +155,7 @@ const Index = () => {
       </div>
 
       <div className="min-h-screen w-full scroll-smooth ">
-        {/* <Navbar /> */}
+        <Navbar />
 
         {/* Main Layout with side gutters */}
         <div className="w-full px-4 py-16 sm:px-6 lg:px-8 lg:pt-0 flex flex-col items-center">
