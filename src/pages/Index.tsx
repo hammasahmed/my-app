@@ -174,7 +174,7 @@ const Index = () => {
       </div>
 
       <div className="min-h-screen w-full scroll-smooth ">
-        <Navbar />
+        {/* <Navbar /> */}
 
         {/* Main Layout with side gutters */}
         <div className="w-full px-4 py-16 sm:px-6 lg:px-8 lg:pt-0 flex flex-col items-center">
