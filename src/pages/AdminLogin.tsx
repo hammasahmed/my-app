@@ -50,7 +50,7 @@ export default function AdminLogin() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-5 py-4 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-rose-200 outline-none"
+              className="w-full px-5 py-4 rounded-xl bg-white text-gray-800 placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-rose-200 outline-none"
             />
 
             <input 
@@ -58,7 +58,7 @@ export default function AdminLogin() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-4 rounded-xl bg-white shadow-sm focus:ring-2 focus:ring-rose-200 outline-none"
+              className="w-full px-5 py-4 rounded-xl bg-white text-gray-800 placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-rose-200 outline-none"
             />
 
             {error && (

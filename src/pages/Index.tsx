@@ -146,7 +146,7 @@ const Index = () => {
   return (
     <TracingBeam>
     <div className="w-full overflow-x-hidden relative">
-      <div className="absolute z-10 bg-transparent w-[calc(31.25rem/2)] h-[calc(31.25rem/2)] lg:w-125 lg:h-125 top-0 right-0 pointer-events-none">
+      <div className="absolute z-0 bg-transparent w-[calc(31.25rem/2)] h-[calc(31.25rem/2)] lg:w-125 lg:h-125 top-0 right-0 pointer-events-none">
         <img
           src={monnimage}
           className="w-full h-full object-cover block"
@@ -158,7 +158,7 @@ const Index = () => {
         <Navbar />
 
         {/* Main Layout with side gutters */}
-        <div className="w-full px-4 py-16 sm:px-6 lg:px-8 lg:pt-0 flex flex-col items-center">
+        <div className="w-full px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center">
           <div className=" flex flex-col gap-24 md:gap-32 ">
             {/* Hero */}
             {/* <AuroraBackground
@@ -168,7 +168,7 @@ const Index = () => {
             >
               <HeroTexts handleNavClick={handleNavClick} />
             </AuroraBackground> */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-16">
               <div className="w-[60vw]   border rounded-4xl border-border/60 bg-card/60 shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
                 <div className="flex items-center justify-between border-b border-border/60 bg-background/80 px-4 py-2 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
@@ -335,82 +335,42 @@ const Index = () => {
               }
               .magic-border-fb:hover::before { opacity: 1; }
             `}</style>
-            <section id="socials" className="flex flex-col items-center gap-16 px-4 sm:px-8">
-              {/* Instagram */}
-              <div className="magic-border-ig relative w-full max-w-4xl space-y-4 rounded-3xl border border-border/80 bg-card/70 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.55)] transition-shadow duration-300 hover:shadow-pink-500/20">
-                <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                  <div className="space-y-1 text-center sm:text-left">
-                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-pink-400">
-                      Instagram
-                    </p>
-                    <h3 className="text-2xl font-bold text-foreground">
-                      @studio.handle
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Daily cuts, breakdowns, and behind-the-scenes clips.
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <div className="rounded-full bg-background/80 px-3 py-1">
-                      24k followers
-                    </div>
-                    <a
-                      href={socialLinks.instagram ? toAbsoluteUrl(socialLinks.instagram) : undefined}
-                      target={socialLinks.instagram ? "_blank" : undefined}
-                      rel="noopener noreferrer"
-                      onClick={!socialLinks.instagram ? (e) => e.preventDefault() : undefined}
-                      className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-xs font-semibold text-white shadow-md"
-                      style={{
-                        backgroundColor: "#ec4899",
-                        boxShadow: "0 4px 14px rgba(236,72,153,0.4)",
-                        transition: "transform 0.2s, background-color 0.2s, box-shadow 0.2s",
-                        opacity: socialLinks.instagram ? 1 : 0.5,
-                        cursor: socialLinks.instagram ? "pointer" : "not-allowed",
-                      }}
-                      onMouseEnter={e => { if (!socialLinks.instagram) return; const el = e.currentTarget; el.style.backgroundColor = "#db2777"; el.style.transform = "scale(1.07)"; el.style.boxShadow = "0 6px 20px rgba(236,72,153,0.65)"; }}
-                      onMouseLeave={e => { const el = e.currentTarget; el.style.backgroundColor = "#ec4899"; el.style.transform = "scale(1)"; el.style.boxShadow = "0 4px 14px rgba(236,72,153,0.4)"; }}
-                    >
-                      View profile
-                    </a>
-                  </div>
-                </div>
-
+            <section id="socials" className="flex flex-col items-center gap-6 px-4 sm:px-8">
+              <div className="space-y-2 text-center">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-pink-400">Socials</p>
+                <h2 className="text-3xl font-bold text-foreground">Find me online</h2>
               </div>
-
-              {/* Facebook */}
-              <div className="magic-border-fb relative w-full max-w-4xl space-y-4 rounded-3xl border border-border/80 bg-card/70 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.55)] transition-shadow duration-300 hover:shadow-sky-500/20">
-                <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                  <div className="space-y-1 text-center sm:text-left">
-                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-400">
-                      Facebook
-                    </p>
-                    <h3 className="text-2xl font-bold text-foreground">
-                      Studio page
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Longer edits, client reels, and campaign launches.
-                    </p>
-                  </div>
-                  <a
-                    href={socialLinks.facebook ? toAbsoluteUrl(socialLinks.facebook) : undefined}
-                    target={socialLinks.facebook ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    onClick={!socialLinks.facebook ? (e) => e.preventDefault() : undefined}
-                    className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-xs font-semibold text-white shadow-md"
-                    style={{
-                      backgroundColor: "#0ea5e9",
-                      boxShadow: "0 4px 14px rgba(14,165,233,0.4)",
-                      transition: "transform 0.2s, background-color 0.2s, box-shadow 0.2s",
-                      opacity: socialLinks.facebook ? 1 : 0.5,
-                      cursor: socialLinks.facebook ? "pointer" : "not-allowed",
-                    }}
-                    onMouseEnter={e => { if (!socialLinks.facebook) return; const el = e.currentTarget; el.style.backgroundColor = "#0284c7"; el.style.transform = "scale(1.07)"; el.style.boxShadow = "0 6px 20px rgba(14,165,233,0.65)"; }}
-                    onMouseLeave={e => { const el = e.currentTarget; el.style.backgroundColor = "#0ea5e9"; el.style.transform = "scale(1)"; el.style.boxShadow = "0 4px 14px rgba(14,165,233,0.4)"; }}
-                  >
-                    View feed
-                  </a>
-                </div>
-
+              <div className="flex items-center gap-6">
+                {/* Instagram icon */}
+                <a
+                  href={socialLinks.instagram ? toAbsoluteUrl(socialLinks.instagram) : undefined}
+                  target={socialLinks.instagram ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  onClick={!socialLinks.instagram ? (e) => e.preventDefault() : undefined}
+                  aria-label="Instagram"
+                  className="magic-border-ig relative flex h-14 w-14 items-center justify-center rounded-2xl border border-border/80 bg-card/70 shadow-md transition-transform duration-200 hover:scale-110 hover:shadow-pink-500/40"
+                  style={{ opacity: socialLinks.instagram ? 1 : 0.4, cursor: socialLinks.instagram ? "pointer" : "not-allowed" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-pink-400">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
+                  </svg>
+                </a>
+                {/* Facebook icon */}
+                <a
+                  href={socialLinks.facebook ? toAbsoluteUrl(socialLinks.facebook) : undefined}
+                  target={socialLinks.facebook ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  onClick={!socialLinks.facebook ? (e) => e.preventDefault() : undefined}
+                  aria-label="Facebook"
+                  className="magic-border-fb relative flex h-14 w-14 items-center justify-center rounded-2xl border border-border/80 bg-card/70 shadow-md transition-transform duration-200 hover:scale-110 hover:shadow-sky-500/40"
+                  style={{ opacity: socialLinks.facebook ? 1 : 0.4, cursor: socialLinks.facebook ? "pointer" : "not-allowed" }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-sky-400">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
               </div>
             </section>
 
