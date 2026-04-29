@@ -69,6 +69,9 @@ export const CircularTestimonials = ({
 
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const autoplayIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchCurrentXRef = useRef<number | null>(null);
+  const minSwipeDistance = 50;
 
   const testimonialsLength = useMemo(() => testimonials.length, [testimonials]);
   const activeTestimonial = useMemo(
@@ -118,6 +121,38 @@ export const CircularTestimonials = ({
     if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
   }, [testimonialsLength]);
 
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    touchStartXRef.current = touch.clientX;
+    touchCurrentXRef.current = touch.clientX;
+    if (autoplayIntervalRef.current) clearInterval(autoplayIntervalRef.current);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartXRef.current === null) return;
+    touchCurrentXRef.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (touchStartXRef.current === null || touchCurrentXRef.current === null) {
+      touchStartXRef.current = null;
+      touchCurrentXRef.current = null;
+      return;
+    }
+
+    const deltaX = touchCurrentXRef.current - touchStartXRef.current;
+    if (Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        handlePrev();
+      } else {
+        handleNext();
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchCurrentXRef.current = null;
+  }, [handleNext, handlePrev]);
+
   function getImageStyle(index: number): React.CSSProperties {
     const gap = calculateGap(containerWidth);
     const maxStickUp = gap * 0.8;
@@ -166,7 +201,12 @@ export const CircularTestimonials = ({
   };
 
   return (
-    <div className="testimonial-container">
+    <div
+      className="testimonial-container"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="testimonial-grid">
         <div className="image-container" ref={imageContainerRef}>
           {testimonials.map((testimonial, index) => (

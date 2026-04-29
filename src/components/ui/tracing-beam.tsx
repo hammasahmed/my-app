@@ -47,7 +47,7 @@ export const TracingBeam = ({
       ref={ref}
       className={cn("relative mx-auto h-full w-full", className)}
     >
-      <div className="fixed top-20 left-4 md:left-8 z-50">
+      <div className="fixed top-20 left-4 md:left-8 z-0 md:z-50 pointer-events-none">
         <svg
           viewBox={`0 0 20 ${svgDisplayHeight}`}
           width="20"
