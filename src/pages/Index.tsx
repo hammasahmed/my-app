@@ -146,10 +146,10 @@ const Index = () => {
   return (
     <TracingBeam>
     <div className="w-full overflow-x-hidden relative">
-      <div className="absolute z-0 bg-transparent w-[calc(31.25rem/2)] h-[calc(31.25rem/2)] lg:w-125 lg:h-125 top-0 right-0 pointer-events-none">
+      <div className="absolute z-0 bg-transparent w-40 h-40 sm:w-64 sm:h-64 md:w-[calc(31.25rem/2)] md:h-[calc(31.25rem/2)] lg:w-125 lg:h-125 top-0 right-1/2 translate-x-1/2 sm:right-0 sm:translate-x-0 pointer-events-none opacity-90">
         <img
           src={monnimage}
-          className="w-full h-full object-cover block"
+          className="w-full h-full object-cover block blur-sm"
           alt=""
         />
       </div>
@@ -169,14 +169,15 @@ const Index = () => {
               <HeroTexts handleNavClick={handleNavClick} />
             </AuroraBackground> */}
             <div className="flex justify-center pt-16">
-              <div className="w-[60vw]   border rounded-4xl border-border/60 bg-card/60 shadow-[0_30px_120px_rgba(0,0,0,0.6)]">
-                <div className="flex items-center justify-between border-b border-border/60 bg-background/80 px-4 py-2 text-xs text-muted-foreground">
+              <div className="relative w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-border/60 bg-card/70 shadow-[0_30px_120px_rgba(0,0,0,0.6)] sm:rounded-[3rem]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.12),_transparent_45%)] opacity-80 pointer-events-none" />
+                <div className="relative flex items-center justify-between border-b border-border/60 bg-background/80 px-4 py-3 text-xs text-muted-foreground sm:px-6">
                   <span className="flex items-center gap-1.5">
                     <span className="inline-flex h-2 w-2 rounded-full bg-rose-500" />
                     <span className="inline-flex h-2 w-2 rounded-full bg-amber-400" />
                     <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                   </span>
-                  <span className="truncate text-[11px] sm:text-xs">
+                  <span className="mx-4 truncate text-[11px] sm:text-xs">
                     {videosLoadState === "loading" && "Loading latest video…"}
                     {videosLoadState === "error" && "Could not load videos"}
                     {videosLoadState === "ready" &&
@@ -197,7 +198,7 @@ const Index = () => {
                     )}
                   </span>
                 </div>
-                <div className="relative aspect-video">
+                <div className="relative aspect-[16/9] w-full">
                   {currentVideo ? (
                     <iframe
                       className="h-full w-full"
