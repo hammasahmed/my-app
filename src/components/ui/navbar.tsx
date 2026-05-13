@@ -30,7 +30,7 @@ const Navbar = () => {
 
   return (
     <header 
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out
+      className={`transition-all duration-500 ease-out
         ${isScrolled 
           ? 'w-[75%] max-w-3xl rounded-full border border-border/50 shadow-lg backdrop-blur-md bg-background/80 py-2' 
           : 'w-full max-w-7xl rounded-full border border-border/50 shadow-lg backdrop-blur-md bg-background/80 py-3'

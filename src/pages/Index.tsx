@@ -1,5 +1,5 @@
 // export default Index;
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -10,6 +10,8 @@ import Navbar from "../components/ui/navbar";
 import { CircularTestimonials } from "../components/ui/circular-testimonials";
 import monnimage from "../assets/moon.png";
 // import { AuroraBackground } from "../components/ui/aurora-background";
+import banner from "../assets/banner.jpeg";
+import adImage from "../assets/ad.jpeg";
 import { TracingBeam } from "../components/ui/tracing-beam";
 
 type PortfolioItem = {
@@ -59,6 +61,8 @@ const Index = () => {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const [navbarFixed, setNavbarFixed] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -117,7 +121,11 @@ const Index = () => {
     axios.get(`${BASE_URL}/api/testimonials`).then(res => setTestimonials(res.data)).catch(() => {});
     axios.get(`${BASE_URL}/api/hidden-videos`).then(res => setHiddenVideos(new Set(res.data))).catch(() => {});
     axios.get(`${BASE_URL}/api/social-links`).then(res => setSocialLinks({ instagram: res.data.instagram ?? "", facebook: res.data.facebook ?? "" })).catch(() => {});
-    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+      const bannerHeight = bannerRef.current?.offsetHeight ?? 0;
+      setNavbarFixed(window.scrollY > 0 && window.scrollY >= bannerHeight);
+    };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -144,6 +152,7 @@ const Index = () => {
   }
 
   return (
+    <>
     <TracingBeam>
     <div className="w-full overflow-x-hidden relative">
       <div className="absolute z-0 bg-transparent w-40 h-40 sm:w-64 sm:h-64 md:w-[calc(31.25rem/2)] md:h-[calc(31.25rem/2)] lg:w-125 lg:h-125 top-0 right-1/2 translate-x-1/2 sm:right-0 sm:translate-x-0 pointer-events-none opacity-90">
@@ -155,20 +164,25 @@ const Index = () => {
       </div>
 
       <div className="min-h-screen w-full scroll-smooth ">
-        <Navbar />
+        <div ref={bannerRef} className="w-full overflow-hidden">
+          <img
+            src={banner}
+            alt="Banner"
+            className="h-auto w-full object-cover"
+          />
+        </div>
+
+        {navbarFixed
+          ? <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-3 px-4"><Navbar /></div>
+          : <div className="w-full flex justify-center"><Navbar /></div>
+        }
 
         {/* Main Layout with side gutters */}
-        <div className="w-full px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center">
-          <div className=" flex flex-col gap-24 md:gap-32 ">
-            {/* Hero */}
-            {/* <AuroraBackground
-              id="home"
-              className="flex flex-col items-center gap-8 rounded-3xl"
-              showRadialGradient={true}
-            >
-              <HeroTexts handleNavClick={handleNavClick} />
-            </AuroraBackground> */}
-            <div className="flex justify-center pt-16">
+        <div className="w-full px-4 py-16 sm:px-6 lg:px-8 flex flex-row items-start gap-4">
+          <div className="flex-1 flex flex-col items-center">
+          <div className="flex flex-col gap-24 md:gap-32 w-full">
+            {/* Hero — video player */}
+            <div className="flex justify-center">
               <div className="relative w-full max-w-5xl overflow-hidden rounded-[2.5rem] border border-border/60 bg-card/70 shadow-[0_30px_120px_rgba(0,0,0,0.6)] sm:rounded-[3rem]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.12),_transparent_45%)] opacity-80 pointer-events-none" />
                 <div className="relative flex items-center justify-between border-b border-border/60 bg-background/80 px-4 py-3 text-xs text-muted-foreground sm:px-6">
@@ -525,6 +539,13 @@ const Index = () => {
               </form>
             </section>
           </div>
+          </div>
+
+          {/* Ad Sidebar Right - visible only on large screens, sits beside the full page content */}
+          <div className="hidden lg:flex flex-col items-center sticky top-20 w-52 shrink-0 pr-4">
+            {/* Ad image loaded from local assets */}
+            <img src={adImage} alt="Advertisement" className="w-full rounded-xl object-cover" />
+          </div>
         </div>
         {/* Scroll to top button */}
         {showScrollTop && (
@@ -572,6 +593,7 @@ const Index = () => {
       </div>
     </div>
     </TracingBeam>
+    </>
   );
 };
 
