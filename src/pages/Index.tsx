@@ -12,7 +12,6 @@ import monnimage from "../assets/moon.png";
 // import { AuroraBackground } from "../components/ui/aurora-background";
 import banner from "../assets/banner.jpeg";
 import adImage from "../assets/ad.jpeg";
-import { TracingBeam } from "../components/ui/tracing-beam";
 
 type PortfolioItem = {
   title: string;
@@ -51,7 +50,7 @@ const Index = () => {
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
-  const [videosLoadState, setVideosLoadState] = useState<
+  const [, setVideosLoadState] = useState<
     "loading" | "ready" | "error"
   >("loading");
   const [showScrollTop, setShowScrollTop] = useState(false);
