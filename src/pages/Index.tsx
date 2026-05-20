@@ -80,7 +80,7 @@ const Index = () => {
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
-  const [, setVideosLoadState] = useState<"loading" | "ready" | "error">(
+  const [videosLoadState, setVideosLoadState] = useState<"loading" | "ready" | "error">(
     "loading",
   );
   const [showScrollTop, setShowScrollTop] = useState(false);
