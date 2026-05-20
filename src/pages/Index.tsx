@@ -11,10 +11,7 @@ import { CircularTestimonials } from "../components/ui/circular-testimonials";
 import monnimage from "../assets/moon.png";
 // import { AuroraBackground } from "../components/ui/aurora-background";
 import banner from "../assets/banner.jpeg";
-import adImage from "../assets/ad.jpeg";
-import adImage1 from "../assets/ad1.jpeg";
 import adImage2 from "../assets/ad2.jpeg";
-import { TracingBeam } from "../components/ui/tracing-beam";
 
 type PortfolioItem = {
   title: string;
@@ -63,7 +60,7 @@ type TestimonialItem = {
   src: string;
 };
 
-const images = [adImage2, monnimage, adImage1, banner, adImage];
+const images = [adImage2, monnimage, adImage2, banner, adImage2];
 // const navLinks = ["Home", "Work", "Socials", "Contact"] as const;
 // type SectionId = (typeof navLinks)[number] extends infer T
 //   ? T extends string
@@ -83,9 +80,9 @@ const Index = () => {
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
-  const [videosLoadState, setVideosLoadState] = useState<
-    "loading" | "ready" | "error"
-  >("loading");
+  const [, setVideosLoadState] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [hiddenVideos, setHiddenVideos] = useState<Set<string>>(new Set());
