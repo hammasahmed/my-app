@@ -12,6 +12,8 @@ import monnimage from "../assets/moon.png";
 // import { AuroraBackground } from "../components/ui/aurora-background";
 import banner from "../assets/banner.jpeg";
 import adImage from "../assets/ad.jpeg";
+import adImage1 from "../assets/ad1.jpeg";
+import adImage2 from "../assets/ad2.jpeg";
 import { TracingBeam } from "../components/ui/tracing-beam";
 
 type PortfolioItem = {
@@ -22,10 +24,35 @@ type PortfolioItem = {
   publishedAt?: string;
 };
 
+const phoneRegex = /^(\+92|92|0)?3[0-9]{9}$/; // Pakistan WhatsApp number validation
+
+const nameRegex = /^[A-Za-z\s]+$/;
+
 const formSchema = z.object({
-  name: z.string().min(2, "Name is too short"),
-  email: z.string().email("Invalid email address"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .min(2, "Name is too short")
+    .regex(nameRegex, "Name should contain only letters"),
+
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .email("Invalid email address"),
+
+  whatsapp: z
+    .string()
+    .trim()
+    .min(1, "WhatsApp number is required")
+    .regex(phoneRegex, "Invalid WhatsApp number"),
+
+  message: z
+    .string()
+    .trim()
+    .min(1, "Message is required")
+    .min(10, "Message must be at least 10 characters"),
 });
 
 type TestimonialItem = {
@@ -36,6 +63,7 @@ type TestimonialItem = {
   src: string;
 };
 
+const images = [adImage2, monnimage, adImage1, banner, adImage];
 // const navLinks = ["Home", "Work", "Socials", "Contact"] as const;
 // type SectionId = (typeof navLinks)[number] extends infer T
 //   ? T extends string
@@ -48,6 +76,10 @@ const toAbsoluteUrl = (url: string) =>
 
 const Index = () => {
   // const [_menuOpen, setMenuOpen] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
@@ -72,10 +104,11 @@ const Index = () => {
     defaultValues: {
       name: "",
       email: "",
+      whatsapp: "",
       message: "",
     },
   });
-  // Placeholder for fetched data
+
   const datafetch = async () => {
     setVideosLoadState("loading");
     try {
@@ -122,15 +155,19 @@ const Index = () => {
     }
   };
   useEffect(() => {
+    // FETCH DATA
     datafetch();
+
     axios
       .get(`${BASE_URL}/api/testimonials`)
       .then((res) => setTestimonials(res.data))
       .catch(() => {});
+
     axios
       .get(`${BASE_URL}/api/hidden-videos`)
       .then((res) => setHiddenVideos(new Set(res.data)))
       .catch(() => {});
+
     axios
       .get(`${BASE_URL}/api/social-links`)
       .then((res) =>
@@ -140,25 +177,73 @@ const Index = () => {
         }),
       )
       .catch(() => {});
+
+    // SCROLL HANDLER
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
+
       const bannerHeight = bannerRef.current?.offsetHeight ?? 0;
+
       setNavbarFixed(window.scrollY > 0 && window.scrollY >= bannerHeight);
     };
+
     handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    // CLEANUP
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  // const _handleNavClick = (id: SectionId) => (e: React.MouseEvent) => {
-  //   e.preventDefault();
-  //   const el = document.getElementById(id);
-  //   if (el) {
-  //     el.scrollIntoView({ behavior: "smooth", block: "start" });
-  //   }
-  //   setMenuOpen(false);
-  // };
+  // AUTO SLIDER EFFECT
+  useEffect(() => {
+    if (paused) return;
 
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [paused, images.length]);
+
+  // NEXT SLIDE
+  const nextSlide = () => {
+    setCurrent((prev) => (prev + 1) % images.length);
+  };
+
+  // PREV SLIDE
+  const prevSlide = () => {
+    setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  // TOUCH START
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  // TOUCH MOVE
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  // TOUCH END
+  const handleTouchEnd = () => {
+    const distance = touchStartX.current - touchEndX.current;
+
+    // SWIPE LEFT
+    if (distance > 50) {
+      nextSlide();
+    }
+
+    // SWIPE RIGHT
+    if (distance < -50) {
+      prevSlide();
+    }
+  };
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setSubmitStatus("idle");
@@ -168,6 +253,17 @@ const Index = () => {
     } catch {
       setSubmitStatus("error");
     }
+  }
+
+  if (videosLoadState === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4 text-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-24 w-24 rounded-full border-12 border-black border-t-transparent animate-spin" />
+          <p className="text-sm text-muted-foreground">Loading Content...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -180,7 +276,6 @@ const Index = () => {
             alt=""
           />
         </div>
-
         <div className="min-h-screen w-full scroll-smooth ">
           <div ref={bannerRef} className="w-full overflow-hidden">
             <img
@@ -189,7 +284,6 @@ const Index = () => {
               className="h-auto w-full object-cover"
             />
           </div>
-
           {navbarFixed ? (
             <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-3 px-4">
               <Navbar />
@@ -201,14 +295,14 @@ const Index = () => {
           )}
 
           {/* Main Layout with side gutters */}
-          <div className="w-full px-4 py-16 sm:px-6 lg:px-8 flex flex-row items-start gap-4">
+          <div className="w-full px-4 py-8 sm:px-6 lg:px-8 flex flex-row items-start gap-4">
             <div className="flex-1 flex flex-col items-center">
-              <div className="flex flex-col gap-24 md:gap-6 w-full">
+              <div className="flex flex-col gap-24 md:gap-6 sm:gap-6 lg:gap-6 w-full">
                 {/* Hero — video player */}
                 <div className="flex justify-center">
                   <div className="grid w-full max-w-7xl gap-6 lg:grid-cols-[10fr_2fr]">
                     {/* YouTube Video */}
-                    <div className="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-card/70 shadow-[0_30px_120px_rgba(0,0,0,0.6)] sm:rounded-[3rem]">
+                    <div className="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-card/70 shadow-[0_30px_120px_rgba(0,0,0,0.6)]sm:rounded-[3rem]">
                       <div className="relative aspect-[16/9] w-full">
                         {currentVideo ? (
                           <a
@@ -247,16 +341,90 @@ const Index = () => {
                     </div>
 
                     {/* Ad Section */}
-                    <div className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
-                      <div className="relative h-full min-h-[220px] lg:min-h-full">
-                        <img
-                          src={adImage}
-                          alt="Ad"
-                          className="absolute inset-0 h-full w-full object-cover"
-                        />
+                    {/* <div className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
+                      <div className="relative min-h-[163px]  lg:min-h-full">
+                        {images.map((image, index) => (
+                          <img
+                            key={index}
+                            src={image}
+                            alt={`Ad ${index + 1}`}
+                            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                              current === index ? "opacity-100" : "opacity-0"
+                            }`}
+                          />
+                        ))}
 
                         <div className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
                           Sponsored
+                        </div>
+                      </div>
+                    </div> */}
+                    <div
+                      className="group relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)]"
+                      onMouseEnter={() => setPaused(true)}
+                      onMouseLeave={() => setPaused(false)}
+                      onTouchStart={handleTouchStart}
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
+                    >
+                      <div className="relative min-h-[163px] lg:min-h-full">
+                        {/* IMAGES */}
+                        {images.map((image, index) => (
+                          <img
+                            key={index}
+                            src={image}
+                            alt={`Ad ${index + 1}`}
+                            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                              current === index
+                                ? "opacity-100 z-10"
+                                : "opacity-0 z-0"
+                            }`}
+                          />
+                        ))}
+
+                        {/* SPONSORED BADGE */}
+                        <div className="absolute right-2 top-2 z-20 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
+                          Sponsored
+                        </div>
+
+                        {/* PREV BUTTON */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            prevSlide();
+                          }}
+                          className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
+                          aria-label="Previous ad"
+                        >
+                          ←
+                        </button>
+
+                        {/* NEXT BUTTON */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            nextSlide();
+                          }}
+                          className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
+                          aria-label="Next ad"
+                        >
+                          →
+                        </button>
+
+                        {/* DOTS */}
+                        <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1">
+                          {images.map((_, index) => (
+                            <button
+                              key={index}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCurrent(index);
+                              }}
+                              className={`h-2 w-2 rounded-full transition ${
+                                current === index ? "bg-white" : "bg-white/40"
+                              }`}
+                            />
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -269,19 +437,6 @@ const Index = () => {
                     id="work"
                     className="flex flex-col items-center gap-6 text-center w-full"
                   >
-                    {/* <div className="space-y-2">
-                      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-400">
-                        Selected Work
-                      </p>
-                      <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-                        Video portfolio
-                      </h2>
-                      <p className="max-w-xl text-sm text-muted-foreground">
-                        A mix of client work and personal pieces, focused on
-                        pace, rhythm, and strong visual storytelling.
-                      </p>
-                    </div> */}
-
                     <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4">
                       {portfolioItems
                         .filter(
@@ -497,11 +652,11 @@ const Index = () => {
                   className="flex flex-col items-center gap-6 text-center px-4 sm:px-8"
                 >
                   <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-400">
+                    {/* <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-400">
                       Kind Words
-                    </p>
+                    </p> */}
                     <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-                      What clients say
+                      What our clients say
                     </h2>
                   </div>
                   {testimonials.length === 0 ? (
@@ -549,12 +704,12 @@ const Index = () => {
 
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="w-full max-w-2xl space-y-6 rounded-3xl border border-border/80 bg-card/80 p-8 shadow-[0_18px_60px_rgba(0,0,0,0.65)]"
+                    className="w-full space-y-6 rounded-3xl border border-border/80 bg-card/80 p-8 shadow-[0_18px_60px_rgba(0,0,0,0.65)]"
                     style={{
                       boxShadow: "0 0 0 1px hsl(210 10% 23% / 0.5)",
                     }}
                   >
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2">
                       <div className="space-y-2 text-left">
                         <label
                           htmlFor="name"
@@ -574,7 +729,6 @@ const Index = () => {
                           </p>
                         )}
                       </div>
-
                       <div className="space-y-2 text-left">
                         <label
                           htmlFor="email"
@@ -592,6 +746,29 @@ const Index = () => {
                         {form.formState.errors.email?.message && (
                           <p className="text-xs text-destructive">
                             {form.formState.errors.email.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-2 text-left">
+                        <label
+                          htmlFor="whatsapp"
+                          className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"
+                        >
+                          WhatsApp Number
+                        </label>
+
+                        <input
+                          id="whatsapp"
+                          type="tel"
+                          autoComplete="tel"
+                          placeholder="03001234567"
+                          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background transition-shadow focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
+                          {...form.register("whatsapp")}
+                        />
+
+                        {form.formState.errors.whatsapp?.message && (
+                          <p className="text-xs text-destructive">
+                            {form.formState.errors.whatsapp.message}
                           </p>
                         )}
                       </div>
@@ -651,15 +828,6 @@ const Index = () => {
                 </section>
               </div>
             </div>
-
-            {/* Ad Sidebar Right - visible only on large screens, sits beside the full page content */}
-            {/* <div className="hidden lg:flex flex-col items-center sticky top-20 w-52 shrink-0 pr-4">
-                <img
-                  src={adImage}
-                  alt="Advertisement"
-                  className="w-full rounded-xl object-cover"
-                />
-              </div> */}
           </div>
           {/* Scroll to top button */}
           {showScrollTop && (
@@ -676,11 +844,10 @@ const Index = () => {
               <div className="space-y-2 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 text-sm font-semibold tracking-[0.25em] text-muted-foreground">
                   <span className="inline-block h-5 w-5 rounded-full bg-gradient-to-br from-sky-500 to-violet-500 shadow-md shadow-sky-500/40" />
-                  <span>STUDIO</span>
+                  <span>Nemat TV</span>
                 </div>
                 <p className="max-w-md text-xs text-muted-foreground">
-                  Crafting bold visuals, rhythmic edits, and cinematic
-                  experiences for brands and artists worldwide.
+                  When <b>staying informed</b> matters.
                 </p>
               </div>
               <div className="flex flex-col items-center gap-4 text-xs text-muted-foreground md:items-end">
@@ -709,7 +876,7 @@ const Index = () => {
                   ))}
                 </div>
                 <p className="text-[11px] text-muted-foreground/80">
-                  © {new Date().getFullYear()} Studio. All rights reserved.
+                  © {new Date().getFullYear()} Nemat TV All rights reserved.
                 </p>
               </div>
             </div>

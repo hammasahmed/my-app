@@ -45,7 +45,7 @@ export const CircularTestimonialsDemo = () => (
     </div>
 
     <div className="bg-[#060507] p-16 rounded-lg min-h-[300px] flex flex-wrap gap-6 items-center justify-center relative">
-      <div className="items-center justify-center relative flex" style={{ maxWidth: "1024px" }}>
+      <div className="items-center justify-center relative flex" style={{ maxWidth: "1024px"}}>
         <CircularTestimonials
           testimonials={testimonials}
           autoplay={true}
