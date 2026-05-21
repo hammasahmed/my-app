@@ -80,9 +80,9 @@ const Index = () => {
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PortfolioItem | null>(null);
-  const [videosLoadState, setVideosLoadState] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
+  const [videosLoadState, setVideosLoadState] = useState<
+    "loading" | "ready" | "error"
+  >("loading");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [hiddenVideos, setHiddenVideos] = useState<Set<string>>(new Set());
@@ -357,7 +357,7 @@ const Index = () => {
                       </div>
                     </div> */}
                     <div
-                      className="group relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)]"
+                      className="hidden lg:block group relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)]"
                       onMouseEnter={() => setPaused(true)}
                       onMouseLeave={() => setPaused(false)}
                       onTouchStart={handleTouchStart}
