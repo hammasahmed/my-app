@@ -11,7 +11,7 @@ import { CircularTestimonials } from "../components/ui/circular-testimonials";
 import monnimage from "../assets/moon.png";
 // import { AuroraBackground } from "../components/ui/aurora-background";
 import banner from "../assets/banner.jpeg";
-import adImage2 from "../assets/ad2.jpeg";
+import adImage2 from "../assets/ad.jpeg";
 
 type PortfolioItem = {
   title: string;
