@@ -1,5 +1,5 @@
 // export default Index;
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type TouchEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -218,12 +218,12 @@ const Index = () => {
   };
 
   // TOUCH START
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
 
   // TOUCH MOVE
-  const handleTouchMove = (e) => {
+  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
     touchEndX.current = e.targetTouches[0].clientX;
   };
 
