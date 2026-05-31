@@ -11,7 +11,10 @@ import { CircularTestimonials } from "../components/ui/circular-testimonials";
 import monnimage from "../assets/moon.png";
 // import { AuroraBackground } from "../components/ui/aurora-background";
 import banner from "../assets/banner.jpeg";
-import adImage2 from "../assets/ad.jpeg";
+import adImage1 from "../assets/New1.jpeg";
+import adImage2 from "../assets/New2.jpeg";
+import adImage3 from "../assets/New3.jpeg";
+import adImage4 from "../assets/New4.jpeg";
 
 type PortfolioItem = {
   title: string;
@@ -60,7 +63,17 @@ type TestimonialItem = {
   src: string;
 };
 
-const images = [adImage2, monnimage, adImage2, banner, adImage2];
+const images = [adImage1, adImage2, adImage3, adImage4];
+const galleryImages = [
+  adImage1,
+  adImage2,
+  adImage3,
+  adImage4,
+  adImage1,
+  adImage2,
+  adImage3,
+  adImage4,
+];
 // const navLinks = ["Home", "Work", "Socials", "Contact"] as const;
 // type SectionId = (typeof navLinks)[number] extends infer T
 //   ? T extends string
@@ -86,6 +99,7 @@ const Index = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [hiddenVideos, setHiddenVideos] = useState<Set<string>>(new Set());
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const [socialLinks, setSocialLinks] = useState({
     instagram: "",
     facebook: "",
@@ -202,7 +216,7 @@ const Index = () => {
 
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
-    }, 3000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [paused, images.length]);
@@ -298,24 +312,32 @@ const Index = () => {
                 {/* Hero — video player */}
                 <div className="flex justify-center">
                   <div className="grid w-full max-w-7xl gap-6 lg:grid-cols-[10fr_2fr]">
-                    {/* YouTube Video */}
                     <div className="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-card/70 shadow-[0_30px_120px_rgba(0,0,0,0.6)]sm:rounded-[3rem]">
                       <div className="relative aspect-[16/9] w-full">
                         {currentVideo ? (
-                          <a
-                            href={`https://www.youtube.com/watch?v=${currentVideo.youtubeId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-full w-full items-center justify-center bg-black"
-                          >
-                            <img
-                              src={`https://img.youtube.com/vi/${currentVideo.youtubeId}/hqdefault.jpg`}
-                              alt={currentVideo.title}
-                              className="h-full w-full object-cover"
+                          // <a
+                          //   href={`https://www.youtube.com/watch?v=${currentVideo.youtubeId}`}
+                          //   target="_blank"
+                          //   rel="noopener noreferrer"
+                          //   className="flex h-full w-full items-center justify-center bg-black"
+                          // >
+                          //   <img
+                          //     src={`https://img.youtube.com/vi/${currentVideo.youtubeId}/hqdefault.jpg`}
+                          //     alt={currentVideo.title}
+                          //     className="h-full w-full object-cover"
+                          //   />
+                          <>
+                            <iframe
+                              className="h-full w-full"
+                              src={`https://www.youtube-nocookie.com/embed/${currentVideo.youtubeId}?rel=0&modestbranding=1`}
+                              title={currentVideo.title}
+                              loading="lazy"
+                              referrerPolicy="strict-origin-when-cross-origin"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
                             />
 
-                            {/* Play Button */}
-                            <div className="absolute inset-0 z-10 flex items-center justify-center">
+                            {/* <div className="absolute inset-0 z-10 flex items-center justify-center">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 68 48"
@@ -327,8 +349,8 @@ const Index = () => {
                                 />
                                 <path d="M45 24 27 14v20" fill="#fff" />
                               </svg>
-                            </div>
-                          </a>
+                            </div> */}
+                          </>
                         ) : (
                           <div className="flex h-full w-full items-center justify-center bg-muted/30 text-xs text-muted-foreground">
                             No video
@@ -337,35 +359,15 @@ const Index = () => {
                       </div>
                     </div>
 
-                    {/* Ad Section */}
-                    {/* <div className="relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
-                      <div className="relative min-h-[163px]  lg:min-h-full">
-                        {images.map((image, index) => (
-                          <img
-                            key={index}
-                            src={image}
-                            alt={`Ad ${index + 1}`}
-                            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-                              current === index ? "opacity-100" : "opacity-0"
-                            }`}
-                          />
-                        ))}
-
-                        <div className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
-                          Sponsored
-                        </div>
-                      </div>
-                    </div> */}
                     <div
-                      className="hidden lg:block group relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)]"
+                      className="group relative overflow-hidden rounded-[2rem] border border-border/60 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.45)] mx-auto w-full max-w-[15rem] h-[38rem] lg:mx-0 lg:w-full lg:max-w-none lg:h-auto"
                       onMouseEnter={() => setPaused(true)}
                       onMouseLeave={() => setPaused(false)}
                       onTouchStart={handleTouchStart}
                       onTouchMove={handleTouchMove}
                       onTouchEnd={handleTouchEnd}
                     >
-                      <div className="relative min-h-[163px] lg:min-h-full">
-                        {/* IMAGES */}
+                      <div className="relative h-full min-h-full">
                         {images.map((image, index) => (
                           <img
                             key={index}
@@ -379,12 +381,10 @@ const Index = () => {
                           />
                         ))}
 
-                        {/* SPONSORED BADGE */}
                         <div className="absolute right-2 top-2 z-20 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
                           Sponsored
                         </div>
 
-                        {/* PREV BUTTON */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -396,7 +396,6 @@ const Index = () => {
                           ←
                         </button>
 
-                        {/* NEXT BUTTON */}
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -408,7 +407,6 @@ const Index = () => {
                           →
                         </button>
 
-                        {/* DOTS */}
                         <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1">
                           {images.map((_, index) => (
                             <button
@@ -429,80 +427,172 @@ const Index = () => {
                 </div>
 
                 {/* Video Portfolio */}
-                <div className="flex justify-center w-full">
+                <div className="flex justify-center m-auto w-[90%]">
                   <section
                     id="work"
-                    className="flex flex-col items-center gap-6 text-center w-full"
+                    className="flex flex-col justify-center items-center gap-6 text-center "
                   >
-                    <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-                      {portfolioItems
-                        .filter(
-                          (item) =>
-                            item.youtubeId !== currentVideo?.youtubeId &&
-                            !hiddenVideos.has(item.youtubeId),
-                        )
-                        .slice(0, showAllVideos ? undefined : 9)
-                        .map((item) => (
-                          <a
-                            key={item.youtubeId}
-                            href={`https://www.youtube.com/watch?v=${item.youtubeId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card/70 text-left shadow-md shadow-black/40 transition-transform duration-150 hover:-translate-y-1 hover:border-sky-500/80 hover:shadow-xl hover:shadow-sky-500/30"
+                    {/* Carousel with Navigation */}
+                    {!showAllVideos && (
+                      <div className="relative w-full  border border-border/60 rounded-3xl bg-card/70 shadow-[0_25px_100px_rgba(0,0,0,0.1)]">
+                        <div className="flex items-center justify-between gap-4 w-full p-2">
+                          {/* Previous Button */}
+                          <button
+                            onClick={() => {
+                              const filtered = portfolioItems.filter(
+                                (item) =>
+                                  item.youtubeId !== currentVideo?.youtubeId &&
+                                  !hiddenVideos.has(item.youtubeId),
+                              );
+                              setCarouselIndex((prev) =>
+                                prev === 0
+                                  ? Math.max(0, filtered.length - 5)
+                                  : prev - 1,
+                              );
+                            }}
+                            className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-cyan-600 text-white  shadow-sky-500/50 hover:shadow-2xl hover:shadow-sky-500/70 hover:scale-110 transition-all duration-300 flex-shrink-0 font-bold text-lg border border-sky-400/50 hover:border-sky-300 group"
+                            aria-label="Previous videos"
                           >
-                            <div className="relative aspect-video overflow-hidden">
-                              {/* YouTube thumbnail image */}
-                              <img
-                                src={`https://img.youtube.com/vi/${item.youtubeId}/maxresdefault.jpg`}
-                                alt={item.title}
-                                className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src =
-                                    `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg`;
-                                }}
-                              />
+                            <span className="group-hover:-translate-x-1 transition-transform duration-300">
+                              ←
+                            </span>
+                          </button>
 
-                              {/* Play button overlay */}
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 68 48"
-                                  className="h-9 w-12"
-                                >
-                                  <path
-                                    d="M66.52 7.74a8 8 0 0 0-5.64-5.66C56.01 1 34 1 34 1s-22.01 0-26.88 1.08a8 8 0 0 0-5.64 5.66A83.5 83.5 0 0 0 0 24a83.5 83.5 0 0 0 1.48 16.26 8 8 0 0 0 5.64 5.66C11.99 47 34 47 34 47s22.01 0 26.88-1.08a8 8 0 0 0 5.64-5.66A83.5 83.5 0 0 0 68 24a83.5 83.5 0 0 0-1.48-16.26z"
-                                    fill="#FF0000"
-                                  />
-                                  <path d="M45 24 27 14v20" fill="#fff" />
-                                </svg>
-                              </div>
+                          {/* Carousel Container */}
+                          <div className="overflow-hidden flex-1">
+                            <div className="grid w-full gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-2">
+                              {portfolioItems
+                                .filter(
+                                  (item) =>
+                                    item.youtubeId !==
+                                      currentVideo?.youtubeId &&
+                                    !hiddenVideos.has(item.youtubeId),
+                                )
+                                .slice(carouselIndex, carouselIndex + 4)
+                                .map((item) => (
+                                  <button
+                                    key={item.youtubeId}
+                                    onClick={() => setCurrentVideo(item)}
+                                    className="group flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card/70 text-left shadow- shadow-black/40 transition-transform duration-150 hover:-translate-y-1 hover:border-sky-500/80 hover:shadow-xl hover:shadow-sky-500/30 cursor-pointer"
+                                  >
+                                    <div className="relative aspect-video w-full overflow-hidden">
+                                      {/* YouTube thumbnail image */}
+                                      <img
+                                        src={`https://img.youtube.com/vi/${item.youtubeId}/maxresdefault.jpg`}
+                                        alt={item.title}
+                                        className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                                        onError={(e) => {
+                                          (e.target as HTMLImageElement).src =
+                                            `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg`;
+                                        }}
+                                      />
 
-                              {/* Tag overlay at bottom */}
-                              {/* <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-2 pt-6 text-xs text-white/80">
-                                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wide">
-                                    {item.tag}
-                                  </span>
-                                </div> */}
+                                      {/* Play button overlay */}
+                                      <div className="absolute inset-0 flex items-center justify-center">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          viewBox="0 0 68 48"
+                                          className="h-9 w-12"
+                                        >
+                                          <path
+                                            d="M66.52 7.74a8 8 0 0 0-5.64-5.66C56.01 1 34 1 34 1s-22.01 0-26.88 1.08a8 8 0 0 0-5.64 5.66A83.5 83.5 0 0 0 0 24a83.5 83.5 0 0 0 1.48 16.26 8 8 0 0 0 5.64 5.66C11.99 47 34 47 34 47s22.01 0 26.88-1.08a8 8 0 0 0 5.64-5.66A83.5 83.5 0 0 0 68 24a83.5 83.5 0 0 0-1.48-16.26z"
+                                            fill="#FF0000"
+                                          />
+                                          <path
+                                            d="M45 24 27 14v20"
+                                            fill="#fff"
+                                          />
+                                        </svg>
+                                      </div>
+                                    </div>
+                                  </button>
+                                ))}
                             </div>
-                            {/* <div className="flex flex-1 flex-col gap-1 px-4 py-3">
-                                <h3 className="text-sm font-semibold text-foreground">
-                                  {item.title}
-                                </h3>
-                                <p className="text-xs text-muted-foreground/90">
-                                  {item.description}
-                                </p>
-                              </div> */}
-                          </a>
-                        ))}
-                    </div>
+                          </div>
+
+                          {/* Next Button */}
+                          <button
+                            onClick={() => {
+                              const filtered = portfolioItems.filter(
+                                (item) =>
+                                  item.youtubeId !== currentVideo?.youtubeId &&
+                                  !hiddenVideos.has(item.youtubeId),
+                              );
+                              setCarouselIndex((prev) =>
+                                Math.min(
+                                  prev + 1,
+                                  Math.max(0, filtered.length - 5),
+                                ),
+                              );
+                            }}
+                            className="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-cyan-600 text-white shadow-lg shadow-sky-500/50 hover:shadow-2xl hover:shadow-sky-500/70 hover:scale-110 transition-all duration-300 flex-shrink-0 font-bold text-lg border border-sky-400/50 hover:border-sky-300 group"
+                            aria-label="Next videos"
+                          >
+                            <span className="group-hover:translate-x-1 transition-transform duration-300">
+                              →
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Grid View for All Videos */}
+                    {showAllVideos && (
+                      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+                        {portfolioItems
+                          .filter(
+                            (item) =>
+                              item.youtubeId !== currentVideo?.youtubeId &&
+                              !hiddenVideos.has(item.youtubeId),
+                          )
+                          .map((item) => (
+                            <button
+                              key={item.youtubeId}
+                              onClick={() => setCurrentVideo(item)}
+                              className="group flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card/70 text-left shadow-md shadow-black/40 transition-transform duration-150 hover:-translate-y-1 hover:border-sky-500/80 hover:shadow-xl hover:shadow-sky-500/30 cursor-pointer"
+                            >
+                              <div className="relative aspect-video overflow-hidden">
+                                {/* YouTube thumbnail image */}
+                                <img
+                                  src={`https://img.youtube.com/vi/${item.youtubeId}/maxresdefault.jpg`}
+                                  alt={item.title}
+                                  className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src =
+                                      `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg`;
+                                  }}
+                                />
+
+                                {/* Play button overlay */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 68 48"
+                                    className="h-9 w-12"
+                                  >
+                                    <path
+                                      d="M66.52 7.74a8 8 0 0 0-5.64-5.66C56.01 1 34 1 34 1s-22.01 0-26.88 1.08a8 8 0 0 0-5.64 5.66A83.5 83.5 0 0 0 0 24a83.5 83.5 0 0 0 1.48 16.26 8 8 0 0 0 5.64 5.66C11.99 47 34 47 34 47s22.01 0 26.88-1.08a8 8 0 0 0 5.64-5.66A83.5 83.5 0 0 0 68 24a83.5 83.5 0 0 0-1.48-16.26z"
+                                      fill="#FF0000"
+                                    />
+                                    <path d="M45 24 27 14v20" fill="#fff" />
+                                  </svg>
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                      </div>
+                    )}
 
                     {portfolioItems.filter(
                       (item) =>
                         item.youtubeId !== currentVideo?.youtubeId &&
                         !hiddenVideos.has(item.youtubeId),
-                    ).length > 9 && (
+                    ).length > 5 && (
                       <button
-                        onClick={() => setShowAllVideos((prev) => !prev)}
+                        onClick={() => {
+                          setShowAllVideos((prev) => !prev);
+                          setCarouselIndex(0);
+                        }}
                         className="mt-2 rounded-full border border-border/70 px-6 py-2 text-sm font-medium text-foreground/80 transition-colors hover:border-sky-400 hover:text-sky-300"
                       >
                         {showAllVideos ? "Show less" : "Show more"}
@@ -511,7 +601,41 @@ const Index = () => {
                   </section>
                 </div>
                 {/* Social Feeds */}
-                <style>{`
+
+                <section
+                  id="gallery"
+                  className="flex flex-col items-center gap-6 text-center px-4 sm:px-8"
+                >
+                  <div className="space-y-2 max-w-3xl">
+                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-400">
+                      Gallery
+                    </p>
+                    <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
+                      Art is the flower... life the green leaf
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      There is an eternal love between the water drop and the
+                      leaf. When you look at them, you can see that they both
+                      shine out of happiness.
+                    </p>
+                  </div>
+
+                  <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {galleryImages.map((src, index) => (
+                      <div
+                        key={index}
+                        className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.08)]"
+                      >
+                        <img
+                          src={src}
+                          alt={`Gallery ${index + 1}`}
+                          className="h-44 w-full object-cover sm:h-52 lg:h-56"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+                {/* <style>{`
               @keyframes spin-border { to { --magic-angle: 360deg; } }
               @property --magic-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
               .magic-border-ig { --magic-angle: 0deg; }
@@ -536,8 +660,8 @@ const Index = () => {
                 opacity: 0; transition: opacity 0.3s; pointer-events: none;
               }
               .magic-border-fb:hover::before { opacity: 1; }
-            `}</style>
-                <section
+            `}</style> */}
+                {/* <section
                   id="socials"
                   className="flex flex-col items-center gap-6 px-4 sm:px-8"
                 >
@@ -550,7 +674,6 @@ const Index = () => {
                     </h2>
                   </div>
                   <div className="flex items-center gap-6">
-                    {/* Instagram icon */}
                     <a
                       href={
                         socialLinks.instagram
@@ -566,12 +689,7 @@ const Index = () => {
                       }
                       aria-label="Instagram"
                       className="magic-border-ig relative flex h-14 w-14 items-center justify-center rounded-2xl border border-border/80 bg-card/70 shadow-md transition-transform duration-200 hover:scale-110 hover:shadow-pink-500/40"
-                      style={{
-                        opacity: socialLinks.instagram ? 1 : 0.4,
-                        cursor: socialLinks.instagram
-                          ? "pointer"
-                          : "not-allowed",
-                      }}
+                    
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -600,8 +718,12 @@ const Index = () => {
                           stroke="none"
                         />
                       </svg>
+                      <span className="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#c13584]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+              </svg>
+            </span>
                     </a>
-                    {/* Facebook icon */}
                     <a
                       href={
                         socialLinks.facebook
@@ -641,7 +763,7 @@ const Index = () => {
                       </svg>
                     </a>
                   </div>
-                </section>
+                </section> */}
 
                 {/* Testimonials */}
                 <section
@@ -823,6 +945,8 @@ const Index = () => {
                     )}
                   </form>
                 </section>
+
+                
               </div>
             </div>
           </div>
