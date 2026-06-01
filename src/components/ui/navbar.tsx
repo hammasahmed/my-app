@@ -32,7 +32,7 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = ["Home", "Work", "Socials", "Testimonials", "Contact"];
+  const navLinks = ["Home", "Work", "Gallery", "Testimonials", "Contact"];
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,

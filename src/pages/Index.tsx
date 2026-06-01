@@ -601,35 +601,29 @@ const Index = () => {
                   </section>
                 </div>
                 {/* Social Feeds */}
-
+<div className="space-y-2 max-w-3xl mx-auto text-center">
+                    <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
+                      Gallery of Moments
+                    </h2>
+                  </div>
                 <section
                   id="gallery"
-                  className="flex flex-col items-center gap-6 text-center px-4 sm:px-8"
-                >
-                  <div className="space-y-2 max-w-3xl">
-                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-sky-400">
-                      Gallery
-                    </p>
-                    <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-                      Art is the flower... life the green leaf
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      There is an eternal love between the water drop and the
-                      leaf. When you look at them, you can see that they both
-                      shine out of happiness.
-                    </p>
-                  </div>
+                  className="flex flex-col w-full items-center mx-auto gap-6 text-center sm:px-8"
 
-                  <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  // rounded-3xl bg-card/70 shadow-[0_25px_100px_rgba(0,0,0,0.1)]
+                >
+                  
+
+                  <div className="grid gap-4 w-[85%] py-4  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
                     {galleryImages.map((src, index) => (
                       <div
                         key={index}
-                        className="overflow-hidden rounded-[2rem] border border-border/70 bg-card/70 shadow-[0_20px_80px_rgba(0,0,0,0.08)]"
+                        className="overflow-hidden rounded-[2rem] bg-card/70 shadow-[0_25px_100px_rgba(0,0,0,0.1)]"
                       >
                         <img
                           src={src}
                           alt={`Gallery ${index + 1}`}
-                          className="h-44 w-full object-cover sm:h-52 lg:h-56"
+                          className="h-auto w-full object-cover sm:h-56 lg:h-48 transition-transform duration-200 hover:scale-105"
                         />
                       </div>
                     ))}
