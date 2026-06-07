@@ -76,9 +76,6 @@ type GalleryPhotoItem = {
 //     : never
 //   : never;
 
-const toAbsoluteUrl = (url: string) =>
-  url && !/^https?:\/\//i.test(url) ? `https://${url}` : url;
-
 const Index = () => {
   // const [_menuOpen, setMenuOpen] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -95,10 +92,6 @@ const Index = () => {
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [hiddenVideos, setHiddenVideos] = useState<Set<string>>(new Set());
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [socialLinks, setSocialLinks] = useState({
-    instagram: "",
-    facebook: "",
-  });
   const [ads, setAds] = useState<AdItem[]>([]);
   const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhotoItem[]>([]);
   const [submitStatus, setSubmitStatus] = useState<
@@ -193,16 +186,6 @@ const Index = () => {
     axios
       .get(`${BASE_URL}/api/hidden-videos`)
       .then((res) => setHiddenVideos(new Set(res.data)))
-      .catch(() => {});
-
-    axios
-      .get(`${BASE_URL}/api/social-links`)
-      .then((res) =>
-        setSocialLinks({
-          instagram: res.data.instagram ?? "",
-          facebook: res.data.facebook ?? "",
-        }),
-      )
       .catch(() => {});
 
     fetchAds();
