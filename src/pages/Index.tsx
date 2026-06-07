@@ -11,10 +11,6 @@ import { CircularTestimonials } from "../components/ui/circular-testimonials";
 import monnimage from "../assets/moon.png";
 // import { AuroraBackground } from "../components/ui/aurora-background";
 import banner from "../assets/banner.jpeg";
-import adImage1 from "../assets/New1.jpeg";
-import adImage2 from "../assets/New2.jpeg";
-import adImage3 from "../assets/New3.jpeg";
-import adImage4 from "../assets/New4.jpeg";
 
 type PortfolioItem = {
   title: string;
@@ -63,17 +59,16 @@ type TestimonialItem = {
   src: string;
 };
 
-const images = [adImage1, adImage2, adImage3, adImage4];
-const galleryImages = [
-  adImage1,
-  adImage2,
-  adImage3,
-  adImage4,
-  adImage1,
-  adImage2,
-  adImage3,
-  adImage4,
-];
+type AdItem = {
+  _id?: string;
+  src: string;
+};
+
+type GalleryPhotoItem = {
+  _id?: string;
+  src: string;
+};
+
 // const navLinks = ["Home", "Work", "Socials", "Contact"] as const;
 // type SectionId = (typeof navLinks)[number] extends infer T
 //   ? T extends string
@@ -104,6 +99,8 @@ const Index = () => {
     instagram: "",
     facebook: "",
   });
+  const [ads, setAds] = useState<AdItem[]>([]);
+  const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhotoItem[]>([]);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
@@ -165,6 +162,25 @@ const Index = () => {
       setVideosLoadState("error");
     }
   };
+
+  const fetchAds = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/ads`);
+      setAds(res.data);
+    } catch {
+      setAds([]);
+    }
+  };
+
+  const fetchGalleryPhotos = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/gallery-photos`);
+      setGalleryPhotos(res.data);
+    } catch {
+      setGalleryPhotos([]);
+    }
+  };
+
   useEffect(() => {
     // FETCH DATA
     datafetch();
@@ -189,6 +205,9 @@ const Index = () => {
       )
       .catch(() => {});
 
+    fetchAds();
+    fetchGalleryPhotos();
+
     // SCROLL HANDLER
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
@@ -212,23 +231,25 @@ const Index = () => {
 
   // AUTO SLIDER EFFECT
   useEffect(() => {
-    if (paused) return;
+    if (paused || ads.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
+      setCurrent((prev) => (prev + 1) % ads.length);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [paused, images.length]);
+  }, [paused, ads.length]);
 
   // NEXT SLIDE
   const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % images.length);
+    if (ads.length === 0) return;
+    setCurrent((prev) => (prev + 1) % ads.length);
   };
 
   // PREV SLIDE
   const prevSlide = () => {
-    setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    if (ads.length === 0) return;
+    setCurrent((prev) => (prev === 0 ? ads.length - 1 : prev - 1));
   };
 
   // TOUCH START
@@ -255,6 +276,13 @@ const Index = () => {
       prevSlide();
     }
   };
+
+  useEffect(() => {
+    if (current >= ads.length) {
+      setCurrent(0);
+    }
+  }, [ads.length, current]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setSubmitStatus("idle");
@@ -368,10 +396,11 @@ const Index = () => {
                       onTouchEnd={handleTouchEnd}
                     >
                       <div className="relative h-full min-h-full">
-                        {images.map((image, index) => (
+                      {ads.length > 0 ? (
+                        ads.map((ad, index) => (
                           <img
-                            key={index}
-                            src={image}
+                            key={ad._id ?? ad.src}
+                            src={ad.src}
                             alt={`Ad ${index + 1}`}
                             className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
                               current === index
@@ -379,49 +408,54 @@ const Index = () => {
                                 : "opacity-0 z-0"
                             }`}
                           />
-                        ))}
-
-                        <div className="absolute right-2 top-2 z-20 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
-                          Sponsored
+                        ))
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-muted/30 text-xs text-muted-foreground">
+                          No ads yet.
                         </div>
+                      )}
 
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            prevSlide();
-                          }}
-                          className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
-                          aria-label="Previous ad"
-                        >
-                          ←
-                        </button>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            nextSlide();
-                          }}
-                          className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
-                          aria-label="Next ad"
-                        >
-                          →
-                        </button>
-
-                        <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1">
-                          {images.map((_, index) => (
-                            <button
-                              key={index}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setCurrent(index);
-                              }}
-                              className={`h-2 w-2 rounded-full transition ${
-                                current === index ? "bg-white" : "bg-white/40"
-                              }`}
-                            />
-                          ))}
-                        </div>
+                      <div className="absolute right-2 top-2 z-20 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
+                        Sponsored
                       </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          prevSlide();
+                        }}
+                        className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
+                        aria-label="Previous ad"
+                      >
+                        ←
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          nextSlide();
+                        }}
+                        className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
+                        aria-label="Next ad"
+                      >
+                        →
+                      </button>
+
+                      <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1">
+                        {ads.map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCurrent(index);
+                            }}
+                            className={`h-2 w-2 rounded-full transition ${
+                              current === index ? "bg-white" : "bg-white/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -615,18 +649,24 @@ const Index = () => {
                   
 
                   <div className="grid gap-4 w-[85%] py-4  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
-                    {galleryImages.map((src, index) => (
-                      <div
-                        key={index}
-                        className="overflow-hidden rounded-[2rem] bg-card/70 shadow-[0_25px_100px_rgba(0,0,0,0.1)]"
-                      >
-                        <img
-                          src={src}
-                          alt={`Gallery ${index + 1}`}
-                          className="h-auto w-full object-cover sm:h-56 lg:h-48 transition-transform duration-200 hover:scale-105"
-                        />
+                    {galleryPhotos.length > 0 ? (
+                      galleryPhotos.map((photo, index) => (
+                        <div
+                          key={photo._id ?? `${photo.src}-${index}`}
+                          className="overflow-hidden rounded-[2rem] bg-card/70 shadow-[0_25px_100px_rgba(0,0,0,0.1)]"
+                        >
+                          <img
+                            src={photo.src}
+                            alt={`Gallery ${index + 1}`}
+                            className="h-auto w-full object-cover sm:h-56 lg:h-48 transition-transform duration-200 hover:scale-105"
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-full rounded-[2rem] bg-card/70 p-8 text-sm text-muted-foreground">
+                        No gallery photos yet.
                       </div>
-                    ))}
+                    )}
                   </div>
                 </section>
                 {/* <style>{`

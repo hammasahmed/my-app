@@ -46,12 +46,28 @@ type PortfolioItem = {
   publishedAt?: string;
 };
 
+type AdItem = {
+  _id?: string;
+  src: string;
+};
+
+type GalleryPhotoItem = {
+  _id?: string;
+  src: string;
+};
+
 export default function Dashboard1() {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [dark, setDark] = useState(true);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [testimonialForm, setTestimonialForm] = useState({ name: "", designation: "", quote: "", src: "" });
   const [testimonialSubmitting, setTestimonialSubmitting] = useState(false);
+  const [ads, setAds] = useState<AdItem[]>([]);
+  const [adForm, setAdForm] = useState({ src: "" });
+  const [adSubmitting, setAdSubmitting] = useState(false);
+  const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhotoItem[]>([]);
+  const [galleryForm, setGalleryForm] = useState({ src: "" });
+  const [gallerySubmitting, setGallerySubmitting] = useState(false);
   const [showAllVideos, setShowAllVideos] = useState(false);
   const [hiddenVideos, setHiddenVideos] = useState<Set<string>>(new Set());
   const [showHidden, setShowHidden] = useState(false);
@@ -122,6 +138,36 @@ export default function Dashboard1() {
     } catch {}
   };
 
+  const fetchAds = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/ads`);
+      setAds(res.data);
+    } catch {}
+  };
+
+  const fetchGalleryPhotos = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/gallery-photos`);
+      setGalleryPhotos(res.data);
+    } catch {}
+  };
+
+  const handleAdImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setAdForm((p) => ({ ...p, src: reader.result as string }));
+    reader.readAsDataURL(file);
+  };
+
+  const handleGalleryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setGalleryForm((p) => ({ ...p, src: reader.result as string }));
+    reader.readAsDataURL(file);
+  };
+
   const handleAddTestimonial = async (e: React.FormEvent) => {
     e.preventDefault();
     setTestimonialSubmitting(true);
@@ -131,6 +177,42 @@ export default function Dashboard1() {
       setTestimonialForm({ name: "", designation: "", quote: "", src: "" });
     } catch {}
     setTestimonialSubmitting(false);
+  };
+
+  const handleAddAd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdSubmitting(true);
+    try {
+      const res = await axios.post(`${BASE_URL}/api/ads`, adForm);
+      setAds((prev) => [res.data, ...prev]);
+      setAdForm({ src: "" });
+    } catch {}
+    setAdSubmitting(false);
+  };
+
+  const handleDeleteAd = async (id: string) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/ads/${id}`);
+      setAds((prev) => prev.filter((item) => item._id !== id));
+    } catch {}
+  };
+
+  const handleAddGalleryPhoto = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setGallerySubmitting(true);
+    try {
+      const res = await axios.post(`${BASE_URL}/api/gallery-photos`, galleryForm);
+      setGalleryPhotos((prev) => [res.data, ...prev]);
+      setGalleryForm({ src: "" });
+    } catch {}
+    setGallerySubmitting(false);
+  };
+
+  const handleDeleteGalleryPhoto = async (id: string) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/gallery-photos/${id}`);
+      setGalleryPhotos((prev) => prev.filter((item) => item._id !== id));
+    } catch {}
   };
 
   const handleDeleteTestimonial = async (id: string) => {
@@ -182,6 +264,8 @@ export default function Dashboard1() {
   useEffect(() => {
     datafetch();
     fetchTestimonials();
+    fetchAds();
+    fetchGalleryPhotos();
     fetchContactMessages();
     fetchHiddenVideos();
     fetchSocialLinks();
@@ -613,6 +697,100 @@ export default function Dashboard1() {
                       onClick={() => t._id && handleDeleteTestimonial(t._id)}
                       className="absolute right-3 top-3 text-red-400 hover:text-red-300"
                       aria-label="Delete testimonial"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ads Section */}
+            <div id="ads-section" className={`flex flex-col rounded-3xl border p-6 backdrop-blur-sm ${dark ? "border-white/10 bg-zinc-900/40 shadow-[0_30px_120px_rgba(0,0,0,0.5)]" : "border-zinc-200 bg-white shadow-sm"}`}>
+              <div className={`mb-4 flex items-center justify-between border-b pb-4 ${dark ? "border-white/10" : "border-zinc-200"}`}>
+                <h2 className={`text-lg font-semibold ${dark ? "text-zinc-50" : "text-zinc-900"}`}>Ads</h2>
+              </div>
+              <form onSubmit={handleAddAd} className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                  <label className={`text-xs font-medium ${dark ? "text-zinc-400" : "text-zinc-500"}`}>Ad image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    required={!adForm.src}
+                    onChange={handleAdImageChange}
+                    className={`text-sm file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1.5 file:text-xs file:font-medium cursor-pointer ${dark ? "text-zinc-300 file:bg-zinc-700 file:text-zinc-100" : "text-zinc-700 file:bg-zinc-100 file:text-zinc-700"}`}
+                  />
+                  {adForm.src && (
+                    <img src={adForm.src} alt="Ad preview" className="h-16 w-16 rounded-xl object-cover" />
+                  )}
+                </div>
+                <Button
+                  type="submit"
+                  disabled={adSubmitting}
+                  className="sm:col-span-2 bg-sky-600 text-white hover:bg-sky-500"
+                >
+                  {adSubmitting ? "Adding..." : "Add Ad"}
+                </Button>
+              </form>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {ads.length === 0 && (
+                  <p className={`col-span-full text-center text-sm ${dark ? "text-zinc-500" : "text-zinc-400"}`}>No ads yet.</p>
+                )}
+                {ads.map((ad) => (
+                  <div key={ad._id ?? ad.src} className={`relative flex flex-col gap-3 rounded-2xl border p-4 ${dark ? "border-white/10 bg-zinc-950/50" : "border-zinc-200 bg-zinc-50"}`}>
+                    <img src={ad.src} alt="Ad image" className="h-32 w-full rounded-2xl object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => ad._id && handleDeleteAd(ad._id)}
+                      className="absolute right-3 top-3 text-red-400 hover:text-red-300"
+                      aria-label="Delete ad"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Gallery Photos Section */}
+            <div id="gallery-section" className={`flex flex-col rounded-3xl border p-6 backdrop-blur-sm ${dark ? "border-white/10 bg-zinc-900/40 shadow-[0_30px_120px_rgba(0,0,0,0.5)]" : "border-zinc-200 bg-white shadow-sm"}`}>
+              <div className={`mb-4 flex items-center justify-between border-b pb-4 ${dark ? "border-white/10" : "border-zinc-200"}`}>
+                <h2 className={`text-lg font-semibold ${dark ? "text-zinc-50" : "text-zinc-900"}`}>Gallery Photos</h2>
+              </div>
+              <form onSubmit={handleAddGalleryPhoto} className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                  <label className={`text-xs font-medium ${dark ? "text-zinc-400" : "text-zinc-500"}`}>Photo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    required={!galleryForm.src}
+                    onChange={handleGalleryImageChange}
+                    className={`text-sm file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1.5 file:text-xs file:font-medium cursor-pointer ${dark ? "text-zinc-300 file:bg-zinc-700 file:text-zinc-100" : "text-zinc-700 file:bg-zinc-100 file:text-zinc-700"}`}
+                  />
+                  {galleryForm.src && (
+                    <img src={galleryForm.src} alt="Gallery preview" className="h-16 w-16 rounded-xl object-cover" />
+                  )}
+                </div>
+                <Button
+                  type="submit"
+                  disabled={gallerySubmitting}
+                  className="sm:col-span-2 bg-sky-600 text-white hover:bg-sky-500"
+                >
+                  {gallerySubmitting ? "Adding..." : "Add Photo"}
+                </Button>
+              </form>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {galleryPhotos.length === 0 && (
+                  <p className={`col-span-full text-center text-sm ${dark ? "text-zinc-500" : "text-zinc-400"}`}>No gallery photos yet.</p>
+                )}
+                {galleryPhotos.map((photo) => (
+                  <div key={photo._id ?? photo.src} className={`relative flex flex-col gap-3 rounded-2xl border p-4 ${dark ? "border-white/10 bg-zinc-950/50" : "border-zinc-200 bg-zinc-50"}`}>
+                    <img src={photo.src} alt="Gallery photo" className="h-32 w-full rounded-2xl object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => photo._id && handleDeleteGalleryPhoto(photo._id)}
+                      className="absolute right-3 top-3 text-red-400 hover:text-red-300"
+                      aria-label="Delete photo"
                     >
                       <Trash2 className="size-4" />
                     </button>
