@@ -279,11 +279,13 @@ const Index = () => {
 
   if (videosLoadState === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4 text-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-24 w-24 rounded-full border-12 border-black border-t-transparent animate-spin" />
-          <p className="text-sm text-muted-foreground">Loading Content...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center">
+        <div className="relative h-20 w-20 animate-spin">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#0A6F78] via-[#0F9DA6] to-transparent" />
+          <div className="absolute inset-2 rounded-full bg-white" />
         </div>
+
+        <h2 className="text-md text-muted-foreground">Loading Content...</h2>
       </div>
     );
   }
@@ -321,8 +323,8 @@ const Index = () => {
             <div className="flex-1 flex flex-col items-center">
               <div className="flex flex-col gap-24 md:gap-6 sm:gap-6 lg:gap-6 w-full">
                 {/* Hero — video player */}
-                <div className="flex justify-center">
-                  <div className="grid w-full max-w-7xl gap-6 lg:grid-cols-[10fr_2fr]">
+                <div className="flex">
+                  <div className="grid w-full gap-6 lg:grid-cols-[10fr_2fr]">
                     <div className="relative overflow-hidden rounded-[2.5rem] border border-border/60 bg-card/70 shadow-[0_30px_120px_rgba(0,0,0,0.6)]sm:rounded-[3rem]">
                       <div className="relative aspect-[16/9] w-full">
                         {currentVideo ? (
@@ -379,66 +381,66 @@ const Index = () => {
                       onTouchEnd={handleTouchEnd}
                     >
                       <div className="relative h-full min-h-full">
-                      {ads.length > 0 ? (
-                        ads.map((ad, index) => (
-                          <img
-                            key={ad._id ?? ad.src}
-                            src={ad.src}
-                            alt={`Ad ${index + 1}`}
-                            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-                              current === index
-                                ? "opacity-100 z-10"
-                                : "opacity-0 z-0"
-                            }`}
-                          />
-                        ))
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-muted/30 text-xs text-muted-foreground">
-                          No ads yet.
+                        {ads.length > 0 ? (
+                          ads.map((ad, index) => (
+                            <img
+                              key={ad._id ?? ad.src}
+                              src={ad.src}
+                              alt={`Ad ${index + 1}`}
+                              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                                current === index
+                                  ? "opacity-100 z-10"
+                                  : "opacity-0 z-0"
+                              }`}
+                            />
+                          ))
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-muted/30 text-xs text-muted-foreground">
+                            No ads yet.
+                          </div>
+                        )}
+
+                        <div className="absolute right-2 top-2 z-20 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
+                          Sponsored
                         </div>
-                      )}
 
-                      <div className="absolute right-2 top-2 z-20 rounded-full bg-black/70 px-2 py-1 text-[10px] text-white backdrop-blur">
-                        Sponsored
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            prevSlide();
+                          }}
+                          className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
+                          aria-label="Previous ad"
+                        >
+                          ←
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            nextSlide();
+                          }}
+                          className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
+                          aria-label="Next ad"
+                        >
+                          →
+                        </button>
+
+                        <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1">
+                          {ads.map((_, index) => (
+                            <button
+                              key={index}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCurrent(index);
+                              }}
+                              className={`h-2 w-2 rounded-full transition ${
+                                current === index ? "bg-white" : "bg-white/40"
+                              }`}
+                            />
+                          ))}
+                        </div>
                       </div>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          prevSlide();
-                        }}
-                        className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
-                        aria-label="Previous ad"
-                      >
-                        ←
-                      </button>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          nextSlide();
-                        }}
-                        className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/60 px-2 py-1 text-sm text-white transition opacity-80 hover:opacity-100 focus-visible:ring-2 focus-visible:ring-white/70"
-                        aria-label="Next ad"
-                      >
-                        →
-                      </button>
-
-                      <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1">
-                        {ads.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setCurrent(index);
-                            }}
-                            className={`h-2 w-2 rounded-full transition ${
-                              current === index ? "bg-white" : "bg-white/40"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
                     </div>
                   </div>
                 </div>
@@ -618,19 +620,17 @@ const Index = () => {
                   </section>
                 </div>
                 {/* Social Feeds */}
-<div className="space-y-2 max-w-3xl mx-auto text-center">
-                    <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-                      Gallery of Moments
-                    </h2>
-                  </div>
+                <div className="space-y-2 max-w-3xl mx-auto text-center">
+                  <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
+                    Gallery of Moments
+                  </h2>
+                </div>
                 <section
                   id="gallery"
                   className="flex flex-col w-full items-center mx-auto gap-6 text-center sm:px-8"
 
                   // rounded-3xl bg-card/70 shadow-[0_25px_100px_rgba(0,0,0,0.1)]
                 >
-                  
-
                   <div className="grid gap-4 w-[85%] py-4  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
                     {galleryPhotos.length > 0 ? (
                       galleryPhotos.map((photo, index) => (
@@ -962,8 +962,6 @@ const Index = () => {
                     )}
                   </form>
                 </section>
-
-                
               </div>
             </div>
           </div>
