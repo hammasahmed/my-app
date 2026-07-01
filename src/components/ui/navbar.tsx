@@ -94,14 +94,14 @@ const Navbar = () => {
 
         {/* Hire Me Button (desktop) + Mobile menu toggle */}
         <div className="flex items-center gap-4 shrink-0">
-          <a
+          {/* <a
             href="#contact"
             onClick={(e) => handleNavClick(e, "contact")}
             className={`hidden rounded-full ml-2 border-2 border-foreground font-medium text-foreground transition-all duration-500 hover:bg-foreground hover:text-background hover:scale-105 md:inline-block
               ${isScrolled ? "px-4 py-1 text-xs" : "px-5 py-1.5 text-sm"}`}
           >
             Let's Talk
-          </a>
+          </a> */}
 
           {/* Dark mode toggle */}
           <button

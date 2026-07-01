@@ -16,5 +16,5 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   }, []);
 
   if (loading) return null;
-  return isAuth ? <>{children}</> : <Navigate to="/admin" replace />;
+  return isAuth ? <>{children}</> : <Navigate to="/iamadmin" replace />;
 }
