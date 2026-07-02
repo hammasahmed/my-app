@@ -26,6 +26,7 @@ type ContactMessage = {
   _id: string;
   name: string;
   email: string;
+  whatsapp: string;
   message: string;
   createdAt: string;
 };
@@ -803,6 +804,12 @@ export default function Dashboard1() {
                           className={`text-xs ${dark ? "text-sky-400" : "text-sky-600"}`}
                         >
                           {m.email}
+                        </p>
+                        <br />
+                        <p
+                          className={`text-xs ${dark ? "text-sky-400" : "text-sky-600"}`}
+                        >
+                          {m.whatsapp}
                         </p>
                         <p
                           className={`text-xs leading-relaxed mt-2 ${dark ? "text-zinc-300" : "text-zinc-600"}`}
